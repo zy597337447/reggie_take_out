@@ -47,10 +47,10 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
         LambdaQueryWrapper<Setmeal> qw = new LambdaQueryWrapper<>();
         qw.in(Setmeal::getId,ids);
         qw.eq(Setmeal::getStatus,1);
-//        int count = this.count(qw);
-//        if (count > 0){
-//            throw new CustomException("套餐售卖中，无法删除");
-//        }
+        int count = this.count(qw);
+        if (count > 0){
+            throw new CustomException("套餐售卖中，无法删除");
+        }
 
         this.removeByIds(ids);
 
