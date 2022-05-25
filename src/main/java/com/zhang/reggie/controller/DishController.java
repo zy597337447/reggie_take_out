@@ -2,6 +2,7 @@ package com.zhang.reggie.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.sun.org.apache.regexp.internal.RE;
 import com.zhang.reggie.common.R;
 import com.zhang.reggie.dto.DishDto;
 import com.zhang.reggie.entity.Category;
@@ -33,7 +34,7 @@ public class DishController {
     public R<String> adddish(@RequestBody DishDto dishDto){
         log.info(dishDto.toString());
         dishService.saveWithFlavor(dishDto);
-        return R.success("新增分类成功");
+        return R.success("新增菜品成功");
 
     }
 
@@ -84,4 +85,23 @@ public class DishController {
         DishDto dishDto = dishService.getByIdWithFlavor(id);
         return R.success(dishDto);
     }
+
+    @PutMapping
+    public R<String> updateDish(@RequestBody DishDto dishDto){
+        dishService.updateWithFlavor(dishDto);
+        return R.success("修改菜品成功");
+    }
+
+    @GetMapping("/list")
+    public R<List<Dish>> getList(Dish dish){
+        LambdaQueryWrapper<Dish> qw = new LambdaQueryWrapper<>();
+        qw.eq(dish.getCategoryId()!=null,Dish::getCategoryId,dish.getCategoryId());
+        qw.eq(Dish::getStatus,1);
+        qw.orderByAsc(Dish::getSort).orderByAsc(Dish::getUpdateTime);
+        List<Dish> list = dishService.list(qw);
+        return R.success(list);
+
+
+    }
+
 }
